@@ -10,7 +10,9 @@ Cuando suban las modificacines pongan un comentario.
 
 Para configurar el repo en eclipse pueden usar este video: 
 
-https://www.youtube.com/watch?v=LPT7v69guVY
+[![Watch the video](https://www.youtube.com/watch?v=LPT7v69guVY)
+
+
 
 Cualquier cosa me comentan por WhatsUp.
 Slds!.
