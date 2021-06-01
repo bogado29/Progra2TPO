@@ -76,14 +76,28 @@ public class ListaDinamica implements ListaTDA {
 	/**
 	 * @Tarea: Inserta el valor en la posicion x, haciendo un corrimiento a la
 	 *         derecha de los restantes elementos.
-	 * @Parametros: elemento a obtener (int)
+	 * @Parametros: Elemento a insertar (int valor) y la posicion a insertar (int index)
 	 * @Devuelve: -
 	 * @Precondicion: Precondicion x es un valor positivo y debe existir el
 	 *                elemento en posicion x
 	 **/
 	public void insert(int index, int valor) {
-		// TODO Auto-generated method stub
+		Nodo temp = cabeza;
+		Nodo nuevo = new Nodo(valor);
+		int contador = 0;
+		while (contador < index){
+			temp = temp.obtenerSiguiente();
+			contador++;
+		}
+		Nodo nodoAnterior = temp.obtenerAnterior();
 
+		nodoAnterior.siguiente = nuevo;
+		nuevo.anterior = nodoAnterior;
+
+		temp.anterior = nuevo;
+		nuevo.siguiente = temp;
+
+		size++;
 	}
 
 	/**
@@ -120,8 +134,18 @@ public class ListaDinamica implements ListaTDA {
 	 **/
 	@Override
 	public int pop(int x) {
-		// TODO Auto-generated method stub
-		return 0;
+		Nodo temp = cabeza;
+		int contador = 0;
+		while (contador < size-1){
+			if (temp.obtenerValor() == x)
+				break;
+			else  {
+				temp = temp.obtenerSiguiente();
+				contador++;
+			} 
+		}
+		this.remove(x); 
+		return x; 
 	}
 
 	/**
