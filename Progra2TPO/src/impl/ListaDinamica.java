@@ -41,7 +41,7 @@ public class ListaDinamica implements ListaTDA {
 	 * @Tarea: Retorna el elemento que se encuentra en la posicion x.
 	 * @Parametros: Elemento a obtener (int).
 	 * @Devuelve: -
-	 * @Precondicion: La estructura no debe estar vicia.
+	 * @Precondicion: La estructura no debe estar vacia.
 	 **/
 	public int get(int index) {
 		int contador = 0;
@@ -54,10 +54,10 @@ public class ListaDinamica implements ListaTDA {
 	}
 
 	/**
-	 * @Tarea: Retorna el elemento que se encuentra en la posicion x.
-	 * @Parametros: Elemento a obtener (int).
+	 * @Tarea: Modifica el elemento que se encuentra en la posicion x.
+	 * @Parametros: Elemento a editar (int) y su nuevo valor (int).
 	 * @Devuelve: -
-	 * @Precondicion: La estructura no debe estar vicia.
+	 * @Precondicion: La estructura no debe estar vacia.
 	 **/
 	public void set(int index, int valor) {
 		if (index > size - 1) // INDEX OUT OF RANGE
@@ -95,9 +95,7 @@ public class ListaDinamica implements ListaTDA {
 	 **/
 	public int pop() {
 		Nodo temp = cabeza;
-		while (temp.obtenerSiguiente().obtenerSiguiente() != null) { // Busco el
-																		// anteultimo
-																		// elemento
+		while (temp.obtenerSiguiente().obtenerSiguiente() != null) { // Busco el anteultimo elemento
 			temp = temp.obtenerSiguiente();
 		}
 		Nodo anteultimo = temp;
@@ -148,11 +146,10 @@ public class ListaDinamica implements ListaTDA {
 	}
 
 	/**
-	 * @Tarea: Permite eliminar el elemento x de la lista, que sera retornado
-	 *         por el metodo.
-	 * @Parametros: Indice a eliminar de la lista (int).
-	 * @Devuelve: Valor a eliminar (int).
-	 * @Precondicion: Precondicion que no se encuentre vacia la lista
+	 * @Tarea: Retorna la cantidad de elementos de la lista.
+	 * @Parametros: -
+	 * @Devuelve: Valor de la cantidad de elementos de lista (int).
+	 * @Precondicion: -
 	 **/
 	public int len() {
 		return size;
@@ -229,14 +226,47 @@ public class ListaDinamica implements ListaTDA {
 	 */
 
 	/**
-	 * @Tarea: Permite eliminar el elemetno de la lista. En el caso de que el
+	 * @Tarea: Permite eliminar el elemento x de la lista. En el caso de que el
 	 *         elemento estuviera repetido, elimina el primero de ellos.
 	 * @Parametros: Elemento a eliminar (int).
 	 * @Devuelve: -
 	 * @Precondicion: La lista no debe estar vacia.
 	 **/
-	public void remove(int index) {
-		// TODO Auto-generated method stub
+	public void remove(int x) {
+		Nodo temp = cabeza;
+		int contador = 0;
+		while (contador < size-1){
+			if (temp.obtenerValor() == x)
+				break;
+			else  {
+				temp = temp.obtenerSiguiente();
+				contador++;
+			} 
+		}
+		// Si el elemento x no se encuentra en la lista
+		if (temp.obtenerSiguiente() == null) 
+			return;
+
+		Nodo nodoAnterior = temp.obtenerAnterior(); // Nodo anterior al elemento x
+		Nodo nodoSiguiente = temp.obtenerSiguiente(); // Nodo siguiente al elemento x
+
+		// Elimino los enlaces con el nodo anterior/siguiente segun corresponda
+
+		// En caso de que x NO sea el PRIMER elemento
+		if (nodoAnterior != null){
+			nodoAnterior.siguiente = nodoSiguiente;
+		    temp.anterior = null;
+		}
+		//En caso de que x NO sea el ULTIMO elemento
+		if (nodoSiguiente != null){
+			nodoSiguiente.anterior = nodoAnterior;
+			temp.siguiente = null;
+		}
+		//En caso de que x SEA EL UNICO elemento de la lista
+		if (nodoAnterior == null & nodoSiguiente == null)
+			temp = null;
+
+		size--;
 	}
 
 	/**
