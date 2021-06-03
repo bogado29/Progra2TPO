@@ -3,13 +3,11 @@ package impl;
 public class Nodo {
 
 	int info;
-	Nodo siguiente;
-	Nodo anterior;
+	Nodo siguiente , anterior;
 	
 	public Nodo(int n){
-		this.info = n;
-		this.siguiente = null;
-		this.anterior = null;
+		info = n;
+		siguiente = anterior = null;
 	}
 	
 	public void enlazarSiguiente(Nodo n) {

@@ -4,8 +4,7 @@ import api.ListaTDA;
 
 public class ListaDinamica implements ListaTDA {
 
-	Nodo cabeza;
-	Nodo fin;
+	Nodo cabeza, fin;
 	int size;
 
 	/**
@@ -29,9 +28,12 @@ public class ListaDinamica implements ListaTDA {
 		Nodo nuevo = new Nodo(x);
 		if (cabeza == null) {
 			cabeza = nuevo;
-			fin = cabeza;
 		} else {
-			fin.enlazarSiguiente(nuevo);
+			Nodo temp = cabeza;
+			while (temp.siguiente != null){ // busco el ultimo nodo de la lista
+				temp = temp.obtenerSiguiente();
+			}
+			temp.enlazarSiguiente(nuevo);
 			fin = nuevo;
 		}
 		size++;
@@ -90,10 +92,11 @@ public class ListaDinamica implements ListaTDA {
 			contador++;
 		}
 		Nodo nodoAnterior = temp.obtenerAnterior();
-
+		//Enlazo con el nodo anterior
 		nodoAnterior.siguiente = nuevo;
 		nuevo.anterior = nodoAnterior;
 
+		//Enlazo con el nodo siguiente
 		temp.anterior = nuevo;
 		nuevo.siguiente = temp;
 
@@ -121,6 +124,7 @@ public class ListaDinamica implements ListaTDA {
 		 */
 		anteultimo.siguiente = null;
 		ultimo.anterior = null;
+		fin = anteultimo;
 		size--;
 		return ultimo.obtenerValor();
 	}
@@ -258,17 +262,15 @@ public class ListaDinamica implements ListaTDA {
 	 **/
 	public void remove(int x) {
 		Nodo temp = cabeza;
-		int contador = 0;
-		while (contador < size-1){
+		while (temp != null){
 			if (temp.obtenerValor() == x)
 				break;
 			else  {
 				temp = temp.obtenerSiguiente();
-				contador++;
 			} 
 		}
 		// Si el elemento x no se encuentra en la lista
-		if (temp.obtenerSiguiente() == null) 
+		if (temp == null) 
 			return;
 
 		Nodo nodoAnterior = temp.obtenerAnterior(); // Nodo anterior al elemento x
@@ -276,20 +278,29 @@ public class ListaDinamica implements ListaTDA {
 
 		// Elimino los enlaces con el nodo anterior/siguiente segun corresponda
 
-		// En caso de que x NO sea el PRIMER elemento
-		if (nodoAnterior != null){
-			nodoAnterior.siguiente = nodoSiguiente;
-		    temp.anterior = null;
-		}
-		//En caso de que x NO sea el ULTIMO elemento
-		if (nodoSiguiente != null){
-			nodoSiguiente.anterior = nodoAnterior;
-			temp.siguiente = null;
-		}
 		//En caso de que x SEA EL UNICO elemento de la lista
 		if (nodoAnterior == null & nodoSiguiente == null)
 			temp = null;
+		
+		else {
+			// En caso de que x sea el PRIMER elemento
+			if (nodoAnterior == null){
+				nodoSiguiente.anterior = null;
+				cabeza = nodoSiguiente;
+			}
+			//En caso de que x sea el ULTIMO elemento
+			else if (nodoSiguiente == null){
+				nodoAnterior.siguiente = null;
+				fin = nodoAnterior;
+			}
+			else { // Caso generico
+				nodoAnterior.siguiente = nodoSiguiente;
+				nodoSiguiente.anterior = nodoAnterior;
 
+			}
+			temp.anterior = null;
+			temp.siguiente = null;
+		}
 		size--;
 	}
 
