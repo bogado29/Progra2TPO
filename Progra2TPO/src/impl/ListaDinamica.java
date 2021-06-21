@@ -31,7 +31,7 @@ public class ListaDinamica implements ListaTDA {
 	 * @Precondicion: la estructura debe estar inicializada.
 	 **/
 	public void append(int x) {
-		Nodo nuevo = new Nodo();
+		Nodo nuevo = new Nodo(); nuevo.info = x;
 		if (cabeza == null) {
 			cabeza = nuevo;
 		} else {
@@ -117,22 +117,28 @@ public class ListaDinamica implements ListaTDA {
 	 * @Precondicion: Precondicion que no se encuentre vacia la lista
 	 **/
 	public int pop() {
-		Nodo temp = cabeza;
-		while (temp.siguiente.siguiente != null) { // Busco el anteultimo elemento
-			temp = temp.siguiente;
-		}
-		Nodo anteultimo = temp;
-		Nodo ultimo = temp.siguiente;
+		int info;
+		if (cabeza.siguiente == null){
+			info = cabeza.info;
+			cabeza = null;
+		} else {
+			Nodo temp = cabeza;
+				while (temp.siguiente.siguiente != null) { // Busco el anteultimo elemento
+					temp = temp.siguiente;
+				}
+			Nodo anteultimo = temp; Nodo ultimo = temp.siguiente;
+			info = ultimo.info;
 		/*
 		 * Defino al siguiente de anteultimo como null y al anterior del ultimo
 		 * como null, de esta forma borro el enlace y el elemento ultimo queda
 		 * desvinculado para ser despues eliminado por garbage collection
 		 */
-		anteultimo.siguiente = null;
-		ultimo.anterior = null;
-		fin = anteultimo;
+			anteultimo.siguiente = null;
+			ultimo.anterior = null;
+			fin = anteultimo;
+		}
 		size--;
-		return ultimo.info;
+		return info;
 	}
 
 	/**
@@ -145,14 +151,8 @@ public class ListaDinamica implements ListaTDA {
 	@Override
 	public int pop(int x) {
 		Nodo temp = cabeza;
-		int contador = 0;
-		while (contador < size-1){
-			if (temp.info == x)
-				break;
-			else  {
+		while (temp != null && temp.info != x){
 				temp = temp.siguiente;
-				contador++;
-			} 
 		}
 		this.remove(x); 
 		return x; 
@@ -315,7 +315,20 @@ public class ListaDinamica implements ListaTDA {
 	 * @Precondicion: La lista no debe estar vacia.
 	 **/
 	public void reverse() {
-		// TODO Auto-generated method stub
+		//Declaro variables auxiliares
+		int cant = len(); int valor;
+		// Array donde voy a guardar los valores de los nodo de manera inversa. (El ultimo de la lista sera el primero en el array)
+		int[] elementos = new int[cant];
+		for (int i = 0; i < cant; i++) {
+			valor = pop();
+			System.out.println("valor: " + valor);
+			elementos[i] = valor;
+		}
+		// Voy agregando los elementos en el array del primero al ultimo en la lista
+		for (int i = 0; i < cant; i++){
+			valor = elementos[i];
+			append(valor);
+		}	
 	}
 
 }

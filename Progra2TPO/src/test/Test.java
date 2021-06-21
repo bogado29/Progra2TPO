@@ -5,7 +5,6 @@ import impl.ListaDinamica;
 public class Test {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 		ListaDinamica lista = new ListaDinamica();
 		lista.inicializar();
@@ -19,10 +18,6 @@ public class Test {
 		lista.print();
 		System.out.println(lista.get(9));
 		
-		//Prueba de set()
-		lista.set(9, 10);
-		lista.print();
-		
 		//Prueba de pop()
 		int ultimo = lista.pop();
 		System.out.println(ultimo);
@@ -34,7 +29,10 @@ public class Test {
 		lista.sort(1);
 		lista.print();
 		
-		
+		// Prueba de reverse()
+		lista.reverse();
+		lista.print();
+
 		
 		
 		
