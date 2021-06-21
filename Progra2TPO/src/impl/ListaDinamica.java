@@ -4,10 +4,15 @@ import api.ListaTDA;
 
 public class ListaDinamica implements ListaTDA {
 
-	Nodo cabeza;
-	Nodo fin;
+	public class Nodo {
+		int info;
+		Nodo siguiente , anterior;
+	}
+
+	Nodo cabeza, fin;
 	int size;
 
+	
 	/**
 	 * @Tarea: Permite inicializar las propiedades de la lista.
 	 * @Parametros: -
@@ -26,12 +31,15 @@ public class ListaDinamica implements ListaTDA {
 	 * @Precondicion: la estructura debe estar inicializada.
 	 **/
 	public void append(int x) {
-		Nodo nuevo = new Nodo(x);
+		Nodo nuevo = new Nodo();
 		if (cabeza == null) {
 			cabeza = nuevo;
-			fin = cabeza;
 		} else {
-			fin.enlazarSiguiente(nuevo);
+			Nodo temp = cabeza;
+			while (temp.siguiente != null){ // busco el ultimo nodo de la lista
+				temp = temp.siguiente;
+			}
+			temp.siguiente = nuevo;
 			fin = nuevo;
 		}
 		size++;
@@ -41,23 +49,23 @@ public class ListaDinamica implements ListaTDA {
 	 * @Tarea: Retorna el elemento que se encuentra en la posicion x.
 	 * @Parametros: Elemento a obtener (int).
 	 * @Devuelve: -
-	 * @Precondicion: La estructura no debe estar vicia.
+	 * @Precondicion: La estructura no debe estar vacia.
 	 **/
 	public int get(int index) {
 		int contador = 0;
 		Nodo temp = cabeza; // Arranca desde el inicio de la lista
 		while (contador < index) {
-			temp = temp.obtenerSiguiente();
+			temp = temp.siguiente;
 			contador++;
 		}
-		return temp.obtenerValor();
+		return temp.info;
 	}
 
 	/**
-	 * @Tarea: Retorna el elemento que se encuentra en la posicion x.
-	 * @Parametros: Elemento a obtener (int).
+	 * @Tarea: Modifica el elemento que se encuentra en la posicion x.
+	 * @Parametros: Elemento a editar (int) y su nuevo valor (int).
 	 * @Devuelve: -
-	 * @Precondicion: La estructura no debe estar vicia.
+	 * @Precondicion: La estructura no debe estar vacia.
 	 **/
 	public void set(int index, int valor) {
 		if (index > size - 1) // INDEX OUT OF RANGE
@@ -66,24 +74,39 @@ public class ListaDinamica implements ListaTDA {
 			int contador = 0;
 			Nodo temp = cabeza;
 			while (contador < index) {
-				temp = temp.obtenerSiguiente();
+				temp = temp.siguiente;
 				contador++;
 			}
-			temp.modificar(valor);
+			temp.info = valor;
 		}
 	}
 
 	/**
 	 * @Tarea: Inserta el valor en la posicion x, haciendo un corrimiento a la
 	 *         derecha de los restantes elementos.
-	 * @Parametros: elemento a obtener (int)
+	 * @Parametros: Elemento a insertar (int valor) y la posicion a insertar (int index)
 	 * @Devuelve: -
 	 * @Precondicion: Precondicion x es un valor positivo y debe existir el
 	 *                elemento en posicion x
 	 **/
 	public void insert(int index, int valor) {
-		// TODO Auto-generated method stub
+		Nodo temp = cabeza;
+		Nodo nuevo = new Nodo(); nuevo.info = valor;
+		int contador = 0;
+		while (contador < index){
+			temp = temp.siguiente;
+			contador++;
+		}
+		Nodo nodoAnterior = temp.anterior;
+		//Enlazo con el nodo anterior
+		nodoAnterior.siguiente = nuevo;
+		nuevo.anterior = nodoAnterior;
 
+		//Enlazo con el nodo siguiente
+		temp.anterior = nuevo;
+		nuevo.siguiente = temp;
+
+		size++;
 	}
 
 	/**
@@ -95,13 +118,11 @@ public class ListaDinamica implements ListaTDA {
 	 **/
 	public int pop() {
 		Nodo temp = cabeza;
-		while (temp.obtenerSiguiente().obtenerSiguiente() != null) { // Busco el
-																		// anteultimo
-																		// elemento
-			temp = temp.obtenerSiguiente();
+		while (temp.siguiente.siguiente != null) { // Busco el anteultimo elemento
+			temp = temp.siguiente;
 		}
 		Nodo anteultimo = temp;
-		Nodo ultimo = temp.obtenerSiguiente();
+		Nodo ultimo = temp.siguiente;
 		/*
 		 * Defino al siguiente de anteultimo como null y al anterior del ultimo
 		 * como null, de esta forma borro el enlace y el elemento ultimo queda
@@ -109,8 +130,9 @@ public class ListaDinamica implements ListaTDA {
 		 */
 		anteultimo.siguiente = null;
 		ultimo.anterior = null;
+		fin = anteultimo;
 		size--;
-		return ultimo.obtenerValor();
+		return ultimo.info;
 	}
 
 	/**
@@ -122,8 +144,18 @@ public class ListaDinamica implements ListaTDA {
 	 **/
 	@Override
 	public int pop(int x) {
-		// TODO Auto-generated method stub
-		return 0;
+		Nodo temp = cabeza;
+		int contador = 0;
+		while (contador < size-1){
+			if (temp.info == x)
+				break;
+			else  {
+				temp = temp.siguiente;
+				contador++;
+			} 
+		}
+		this.remove(x); 
+		return x; 
 	}
 
 	/**
@@ -138,21 +170,20 @@ public class ListaDinamica implements ListaTDA {
 		int contador = 0;
 		Nodo temp = cabeza;
 		while (contador < size - 1) {
-			int valor = temp.obtenerValor();
-			System.out.print(valor + ", ");
-			temp = temp.obtenerSiguiente();
+			
+			System.out.print(temp.info + ", ");
+			temp = temp.siguiente;
 			contador++;
+
 		}
-		int valor = temp.obtenerValor();
-		System.out.println(valor + "]");
+		System.out.println(temp.info + "]");
 	}
 
 	/**
-	 * @Tarea: Permite eliminar el elemento x de la lista, que sera retornado
-	 *         por el metodo.
-	 * @Parametros: Indice a eliminar de la lista (int).
-	 * @Devuelve: Valor a eliminar (int).
-	 * @Precondicion: Precondicion que no se encuentre vacia la lista
+	 * @Tarea: Retorna la cantidad de elementos de la lista.
+	 * @Parametros: -
+	 * @Devuelve: Valor de la cantidad de elementos de lista (int).
+	 * @Precondicion: -
 	 **/
 	public int len() {
 		return size;
@@ -210,14 +241,12 @@ public class ListaDinamica implements ListaTDA {
 	 * @Precondicion: La lista X no debe estar vacia.
 	 **/
 	public void extend(ListaTDA x) {
-		int aux = x.len();
-		int aux2;
-		while (aux - 1 > 0) {
-			aux2 = x.pop();
-			System.out.println("value: " + aux2);
-			append(aux2);
-			aux--;
-			System.out.println("Aux value: " + aux);
+		int valorNodo;
+		while (x.len() - 1 > 0) {
+			valorNodo = x.pop();
+			System.out.println("value: " + valorNodo);
+			append(valorNodo);
+			System.out.println("Aux value: " + x.len());
 		}
 	}
 
@@ -229,14 +258,54 @@ public class ListaDinamica implements ListaTDA {
 	 */
 
 	/**
-	 * @Tarea: Permite eliminar el elemetno de la lista. En el caso de que el
+	 * @Tarea: Permite eliminar el elemento x de la lista. En el caso de que el
 	 *         elemento estuviera repetido, elimina el primero de ellos.
 	 * @Parametros: Elemento a eliminar (int).
 	 * @Devuelve: -
 	 * @Precondicion: La lista no debe estar vacia.
 	 **/
-	public void remove(int index) {
-		// TODO Auto-generated method stub
+	public void remove(int x) {
+		Nodo temp = cabeza;
+		while (temp != null){
+			if (temp.info == x)
+				break;
+			else  {
+				temp = temp.siguiente;
+			} 
+		}
+		// Si el elemento x no se encuentra en la lista
+		if (temp == null) 
+			return;
+
+		Nodo nodoAnterior = temp.anterior; // Nodo anterior al elemento x
+		Nodo nodoSiguiente = temp.siguiente; // Nodo siguiente al elemento x
+
+		// Elimino los enlaces con el nodo anterior/siguiente segun corresponda
+
+		//En caso de que x SEA EL UNICO elemento de la lista
+		if (nodoAnterior == null & nodoSiguiente == null)
+			temp = null;
+		
+		else {
+			// En caso de que x sea el PRIMER elemento
+			if (nodoAnterior == null){
+				nodoSiguiente.anterior = null;
+				cabeza = nodoSiguiente;
+			}
+			//En caso de que x sea el ULTIMO elemento
+			else if (nodoSiguiente == null){
+				nodoAnterior.siguiente = null;
+				fin = nodoAnterior;
+			}
+			else { // Caso generico
+				nodoAnterior.siguiente = nodoSiguiente;
+				nodoSiguiente.anterior = nodoAnterior;
+
+			}
+			temp.anterior = null;
+			temp.siguiente = null;
+		}
+		size--;
 	}
 
 	/**
