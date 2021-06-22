@@ -33,13 +33,10 @@ public class ListaDinamica implements ListaTDA {
 	public void append(int x) {
 		Nodo nuevo = new Nodo(); nuevo.info = x;
 		if (cabeza == null) {
-			cabeza = nuevo;
+			cabeza = fin = nuevo;
 		} else {
-			Nodo temp = cabeza;
-			while (temp.siguiente != null){ // busco el ultimo nodo de la lista
-				temp = temp.siguiente;
-			}
-			temp.siguiente = nuevo;
+			fin.siguiente = nuevo;
+			nuevo.anterior = fin;
 			fin = nuevo;
 		}
 		size++;
@@ -120,22 +117,12 @@ public class ListaDinamica implements ListaTDA {
 		int info;
 		if (cabeza.siguiente == null){
 			info = cabeza.info;
-			cabeza = null;
+			cabeza = fin = null;
 		} else {
-			Nodo temp = cabeza;
-				while (temp.siguiente.siguiente != null) { // Busco el anteultimo elemento
-					temp = temp.siguiente;
-				}
-			Nodo anteultimo = temp; Nodo ultimo = temp.siguiente;
-			info = ultimo.info;
-		/*
-		 * Defino al siguiente de anteultimo como null y al anterior del ultimo
-		 * como null, de esta forma borro el enlace y el elemento ultimo queda
-		 * desvinculado para ser despues eliminado por garbage collection
-		 */
-			anteultimo.siguiente = null;
-			ultimo.anterior = null;
-			fin = anteultimo;
+			Nodo temp = fin.anterior;
+			info = fin.info;
+			temp.siguiente = null; fin.anterior = null; //Corto los enlaces del Nodo fin
+			fin = temp; //Muevo el puntero de fin hacia el nodo temp (el anteultimo)
 		}
 		size--;
 		return info;
@@ -241,13 +228,19 @@ public class ListaDinamica implements ListaTDA {
 	 * @Precondicion: La lista X no debe estar vacia.
 	 **/
 	public void extend(ListaTDA x) {
-		int valorNodo;
-		while (x.len() - 1 > 0) {
-			valorNodo = x.pop();
-			System.out.println("value: " + valorNodo);
-			append(valorNodo);
-			System.out.println("Aux value: " + x.len());
+		int cant = x.len(); int valor; int i = 0;
+
+		// Array donde voy a guardar los valores de los nodo de manera inversa. (El ultimo de la lista sera el primero en el array)
+		int[] elementos = new int[cant];
+		for (;i < cant; i++) {
+			valor = x.pop();
+			elementos[i] = valor;
 		}
+		i--; // Decremento en 1 a la variable i porque despues del anterior ciclo quedo i = x.len() + 1
+		for (;i >= 0; i--) { // Agrego los elementos del ultimo al primero a la lista, esto mantendra el orden original de la lista x
+			this.append(elementos[i]);
+		}
+		
 	}
 
 	/*
@@ -321,7 +314,6 @@ public class ListaDinamica implements ListaTDA {
 		int[] elementos = new int[cant];
 		for (int i = 0; i < cant; i++) {
 			valor = pop();
-			System.out.println("valor: " + valor);
 			elementos[i] = valor;
 		}
 		// Voy agregando los elementos en el array del primero al ultimo en la lista
